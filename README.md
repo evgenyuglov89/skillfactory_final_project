@@ -7,60 +7,55 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## Запуск проекта.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+В папке с проектом в консоли выполняем команду `composer install`. Если после её выполнения не был создан в корне файла `.env`, то в консоли выполняем ещё две команды 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+`php -r "copy('.env.example', '.env');"` 
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+`php artisan key:generate`
 
-## Learning Laravel
+Создаём базу данных, в файле `.env` настраиваем к ней подключение.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Для создания таблиц в базе данных запускам команду `php artisan migrate`.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Для запуска проекта выполняем команду `php artisan serve`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Описание проекта.
 
-## Laravel Sponsors
+>Приложение SF-AdTech — это трекер трафика, созданный для организации взаимодействия компаний (рекламодателей), которые хотят привлечь к себе на сайт посетителей и покупателей (клиентов), и владельцев сайтов (веб-мастеров), на которые люди приходят, например, чтобы почитать новости или пообщаться на форуме.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+> В системе предусмотрены три роли пользователей:
 
-### Premium Partners
+1. Администратор (role = 0)
+2. Рекламодатель (role = 1)
+3. Веб-мастер (role = 2)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Роль "Администратор" не может быть выбрана при создании учётной записи, эту роль может назначить либо другой Администратор, либо изменять в базе данных.
 
-## Contributing
+Роли "Рекламодатель" и "Веб-мастер" могут быть выбраны при создании учётной записи.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Администратору доступны следующие опции:
 
-## Code of Conduct
+* Создание новых пользователей
+* Редактирование данных существующих пользователей
+* Смена статуса пользователей
+* Просмотр информации о системе
+* Просмотр информации по ссылкам
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Рекламодателю доступны следующие опции:
 
-## Security Vulnerabilities
+* Создание offer-а
+* Редактирование существующих, своих, offer-ов
+* Смена статуса, своих, offer-ов
+* Просмотр статистики по своим offer-админа
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Веб-мастеру доступны следующие опции:
 
-## License
+* Просмотр списка доступных активных offer-ов
+* Возможность подписаться на offer
+* Возможность отписаться от offer-а
+* Просмотр статистики по переходам по ссылкам
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Как только Веб-мастер подписывается на offer, будет сгенерирована ссылка, которую он может использовать у себя на ресурсе. При переходи клиентом по этой ссылке, система-редиректор зафиксирует факт перехода в базе данных и при успешном переходе клиент будет перенаправлен на страницу сайта рекламодателя.
+При неуспешном переходе, клиент будет перенаправлен на страницу 404.
