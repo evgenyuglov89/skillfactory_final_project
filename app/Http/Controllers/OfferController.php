@@ -13,6 +13,7 @@ use App\Http\Requests\UpdateOfferRequest;
 
 class OfferController extends Controller
 {
+    // Создание нового offer-а.
     public function createOffer(CreateOfferRequest $request)
     {
         $validated = $request->validated();
@@ -28,6 +29,7 @@ class OfferController extends Controller
         return redirect()->route('offers_list');
     }
 
+    // Обновление данных offer-а.
     public function updateOffer(UpdateOfferRequest $request)
     {
         $validated = $request->validated();
@@ -41,6 +43,7 @@ class OfferController extends Controller
         return redirect()->route('offers_list');
     }
 
+    // Формирование списка активных offer-ов для веб-мастера.
     public function getOffersWebmaster()
     {
         $offers = DB::table('offers as o')->select('o.id', 'o.name', 'o.theme', 'o.cost', 'u.name as owner', 'o.url', 'o.created_at')
@@ -48,9 +51,11 @@ class OfferController extends Controller
         ->where('o.is_active', 1)->get();
         $subscriptions = Subscription::whereSubscriberId(Auth::id())->whereIsActive(1)->get();
         foreach ($offers as $offer) {
+            // Формируем input.
             $offer->actions = '<label class="switch">
             <input type="checkbox" class="switch__input" value="' . $offer->id . '"';
 
+            // Определяем offer-ы на которые подписан веб-мастер.
             $filtered = $subscriptions->filter(function ($value) use ($offer) {
                 return $value->offer_id == $offer->id;
             })->first();
@@ -68,6 +73,7 @@ class OfferController extends Controller
         return $js;
     }
 
+     // Формирование списка созданных offer-ов для рекламодателя.
     public function getOffersAdvertiser()
     {
         $offers = DB::table('offers as o')->select('o.id', 'o.name', 'o.theme', 'o.cost', 'o.is_active', 'o.url', 'o.subscribers', 'o.created_at')
@@ -77,15 +83,17 @@ class OfferController extends Controller
             <a href="/edit_offer/' . $offer->id . '" class="nav-link px-2">Редактировать</a>
             </button>';
 
+            // Формируем input.
             $offer->changed_status = '<label class="switch">
             <input type="checkbox" class="switch__input" value="' . $offer->id . '"';
-
+            // Определяем статус offer-а.
             if($offer->is_active) {
                 $offer->status = "Активен";
                 $offer->changed_status .= ' checked';
             } else {
                 $offer->status = "Неактивен";
             }
+            // Кол-во подписчиков на offer.
             $offer->subscribers_number = $offer->subscribers ? $offer->subscribers : 0;
             $offer->changed_status .= '/>
                 <span class="switch__slider"></span>
@@ -95,6 +103,7 @@ class OfferController extends Controller
         return $js;
     }
 
+    // Изменение статуса offer-а.
     public function changeStatus($action, $id)
     {
         $user = Offer::find($id);
@@ -108,11 +117,13 @@ class OfferController extends Controller
         return "ok";
     }
 
+    // Подписка на offer.
     public function subscribe($id)
     {
         $subscription = Subscription::whereOfferId($id)->whereSubscriberId(Auth::id())->whereIsActive(1)->first();
         if(!$subscription) {
             $offer = Offer::find($id);
+            // Если подписка идёт на offer, который стал неактивен, будет обновлена таблица и offer пропадёт из неё.
             if(!$offer->is_active) {
                 return "bad_offer";
             }
@@ -122,6 +133,7 @@ class OfferController extends Controller
             $subscription->token = md5(time());
             $subscription->link = request()->getSchemeAndHttpHost() . "/api/SF-AdTech/redirect/" . $subscription->token;
             $subscription->save();
+            // Увеличиваем кол-во подписчиков на offer.
             if($offer->subscribers) {
                 $offer->subscribers++;
             } else {
@@ -132,6 +144,7 @@ class OfferController extends Controller
         return "ok";
     }
 
+    // Отписка от offer-а.
     public function unsubscribe($id)
     {
         $subscription = Subscription::whereOfferId($id)->whereSubscriberId(Auth::id())->whereIsActive(1)->first();

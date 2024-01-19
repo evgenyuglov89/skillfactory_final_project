@@ -13,6 +13,7 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
+    // Получение информации о пользователях.
     public function getUsers()
     {
         $users = User::all();
@@ -25,9 +26,11 @@ class UserController extends Controller
                 $user->role = "Админ";
             }
             $user->status = $user->is_active ? "Активен" : "Неактивен";
+            // Формирование кнопки редактирования.
             $user->changed_user = '<button type="button" class="btn btn-info">
             <a href="/edit_user/' . $user->id . '" class="nav-link px-2">Редактировать</a>
             </button>';
+            // Формирование input.
             $user->changed_status = '<label class="switch">
             <input type="checkbox" class="switch__input" value="' . $user->id . '"';
             if($user->is_active) {
@@ -41,6 +44,7 @@ class UserController extends Controller
         return $js;
     }
 
+    // Изменение статуса пользователя.
     public function changeStatus($action, $id)
     {
         $user = User::find($id);
@@ -53,6 +57,7 @@ class UserController extends Controller
 
         return "ok";
     }
+    // Редактирование информации в профиле.
     public function editUser(EditUserRequest $request)
     {
         $validated = $request->validated();
@@ -65,6 +70,7 @@ class UserController extends Controller
         return redirect()->route('home');
     }
 
+    // Создание нового пользователя.
     public function createUser(CreateUserRequest $request)
     {
         $validated = $request->validated();
@@ -82,6 +88,7 @@ class UserController extends Controller
         $user->save();
         return redirect()->route('show_users');
     }
+    // Редактирование пользователей админом.
     public function updateUser(UpdateUserRequest $request)
     {
         $validated = $request->validated();

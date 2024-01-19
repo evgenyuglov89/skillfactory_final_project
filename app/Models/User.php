@@ -44,6 +44,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    // Форматирование даты.
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');

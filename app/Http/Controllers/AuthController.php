@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+    // Авторизация.
     public function signIn(SignInRequest $request)
     {
         $validated = $request->validated();
@@ -32,6 +33,7 @@ class AuthController extends Controller
             return view('login', ['error' => $error]);
         }
     }
+    // Регистрация.
     public function signUp(SignUpRequest $request)
     {
         $validated = $request->validated();
@@ -44,6 +46,7 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
+    // Выход из системы.
     public function logout()
     {
         Session::flush();

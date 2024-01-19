@@ -89,5 +89,6 @@ Route::middleware(['auth', 'check.user.status'])->group(function() {
 
     // Выход из системы.
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
 });
 

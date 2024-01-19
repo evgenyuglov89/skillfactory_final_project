@@ -17,6 +17,7 @@ class CheckStatusUser
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Если статус пользователя стал "Неактивен" выкидываем его из системы.
         if(Auth::user() && !Auth::user()->is_active) {
             Session::flush();
             Auth::logout();
